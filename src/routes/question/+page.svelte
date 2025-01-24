@@ -114,7 +114,7 @@ function next(score: number, scoreName: string, nextQ: number | null, resultId: 
         question = $ReadingPost.questions[$index].text ?? "질문을 불러올 수 없습니다.";
     } else if (resultId !== null && resultId !== undefined && resultId !== "") {
         goto(`/result/${resultId}`);
-    } else if ($index + 1 > $ReadingPost.questions.length)
+    } else if ($index + 1 < $ReadingPost.questions.length)
     {
         index.set($index+1)
         console.log("다음 질문으로 넘어갑니다")
