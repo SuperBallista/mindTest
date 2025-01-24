@@ -55,6 +55,7 @@ function findMatchingResult(
     }
 
     if (resultType === 'max') {
+
         let maxScoreName: string | null = null;
         let maxScore = -Infinity;
 
@@ -115,7 +116,17 @@ function next(score: number, scoreName: string, nextQ: number | null, resultId: 
         question = $ReadingPost.questions[index].text ?? "질문을 불러올 수 없습니다.";
     } else if (resultId !== null && resultId !== undefined && resultId !== "") {
         goto(`/result/${resultId}`);
-    } else {
+    } else if (index + 1 > $ReadingPost.questions.length)
+    {
+        index += 1
+        console.log("다음 질문으로 넘어갑니다")
+        choices = $ReadingPost.questions[index].choices ?? [];
+        question = $ReadingPost.questions[index].text ?? "질문을 불러올 수 없습니다.";
+    }
+    
+    
+    
+    else {
         console.log("✅ 모든 질문 완료! 결과 계산 중...");
         const finalResultId = findMatchingResult(scores, $ReadingPost.results ?? [], $ReadingPost.id ?? "", $ReadingPost.resultType ?? "score");
 
