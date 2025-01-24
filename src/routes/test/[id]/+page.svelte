@@ -8,7 +8,7 @@
     export let data;
 
     function shareTest() {
-        const shareUrl = `${BASE_URL}/${data.id}`;
+        const shareUrl = `${BASE_URL}/test/${data.id}`;
 
         if (navigator.share) {
             navigator.share({
