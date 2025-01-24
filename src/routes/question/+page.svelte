@@ -110,7 +110,7 @@ function next(score: number, scoreName: string, nextQ: number | null, resultId: 
         index = nextQ;
         choices = $ReadingPost?.questions?.[index]?.choices ?? [];
         question = $ReadingPost?.questions?.[index]?.text ?? "질문을 불러올 수 없습니다.";
-    } else if (resultId !== null && resultId !== undefined) {
+    } else if (resultId !== null && resultId !== undefined && resultId !== "") {
         goto(`/result/${resultId}`);
     } else {
         const finalResultId = findMatchingResult(scores, $ReadingPost?.results ?? [], $ReadingPost?.id ?? "", $ReadingPost?.resultType ?? "score");
