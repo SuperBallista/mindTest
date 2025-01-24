@@ -102,18 +102,22 @@ function findMatchingResult(
     return null;
 }
 
-// ✅ 선택지 클릭 시 동작
 function next(score: number, scoreName: string, nextQ: number | null, resultId: string | null | undefined) {
     updateScores(scoreName, score);
 
-    if (nextQ !== null && typeof nextQ === "number") {
-        index = nextQ;
-        choices = $ReadingPost?.questions?.[index]?.choices ?? [];
-        question = $ReadingPost?.questions?.[index]?.text ?? "질문을 불러올 수 없습니다.";
+    if (!$ReadingPost || !$ReadingPost.questions || $ReadingPost.questions.length === 0) return;
+
+
+    const nextIndex = Number(nextQ);
+    if (!isNaN(nextIndex) && nextIndex >= 0 && nextIndex < $ReadingPost.questions.length) {
+        index = nextIndex;
+        choices = $ReadingPost.questions[index].choices ?? [];
+        question = $ReadingPost.questions[index].text ?? "질문을 불러올 수 없습니다.";
     } else if (resultId !== null && resultId !== undefined && resultId !== "") {
         goto(`/result/${resultId}`);
     } else {
-        const finalResultId = findMatchingResult(scores, $ReadingPost?.results ?? [], $ReadingPost?.id ?? "", $ReadingPost?.resultType ?? "score");
+        console.log("✅ 모든 질문 완료! 결과 계산 중...");
+        const finalResultId = findMatchingResult(scores, $ReadingPost.results ?? [], $ReadingPost.id ?? "", $ReadingPost.resultType ?? "score");
 
         if (finalResultId) {
             goto(`/result/${finalResultId}`);

@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         // ✅ 7. 선택지 내부 resultDBId를 미리 매핑
         questions.forEach(question => {
             question.choices.forEach(choice => {
-                if (choice.resultId !== null && typeof choice.resultId === "number") {
+                if (!isNaN(Number(choice.resultId)) && Number(choice.resultId) >= 0 && choice.resultId !== null) {
                     const targetResult = results[choice.resultId];
                     if (!targetResult || !targetResult.resultDBId) {
                         throw new Error(`❌ 선택지가 참조하는 결과 ID가 존재하지 않음 (resultId: ${choice.resultId})`);
