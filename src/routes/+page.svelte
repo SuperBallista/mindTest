@@ -18,7 +18,7 @@
     <meta property="og:type" content="article" />
     <meta property="og:title" content="땅콩테스트" />
     <meta property="og:description" content="세상의 모든 심리테스트를 모아서 해보는 재미있는 땅콩테스트" />
-    <meta property="og:image" content="" />
+    <meta property="og:image" content="favicon.png" />
     <meta property="og:url" content={BASE_URL} />
     <meta property="og:site_name" content="땅콩 테스트" />
 
@@ -34,7 +34,7 @@
     <meta itemprop="image" content="favicon.png" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image.png" href="/favicon.png" />
 </svelte:head>
 
   
