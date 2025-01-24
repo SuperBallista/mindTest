@@ -1,8 +1,7 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { onMount } from "svelte";
     import { writable } from "svelte/store";
-    import { goto } from "$app/navigation";
-    import { page } from "$app/stores";
 
     let token = writable<string | null>(null);
     let newPassword = writable("");

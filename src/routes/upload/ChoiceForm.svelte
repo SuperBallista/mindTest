@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Choice } from '$lib/types';
-  import { testStore } from '$lib/stores/testStore';
+  import { testStore } from '$lib/stores/QuestionStore';
 
   export let choice: Choice;
   export let qIndex: number;

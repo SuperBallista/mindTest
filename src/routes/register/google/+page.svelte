@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { goto } from "$app/navigation";
-    import { access, userId, username } from "$lib/stores/testStore";
+    import { access, userId, username } from "$lib/stores/userStore";
+    import { goto } from '$app/navigation';
 
     let email = "";
     let googleId = "";

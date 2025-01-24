@@ -1,6 +1,6 @@
 <script lang="ts">
+    import { userId, username, access } from '$lib/stores/userStore';
     import { goto } from '$app/navigation';
-    import { userId, username, access } from '$lib/stores/testStore';
   import { onMount } from 'svelte';
 
   let message = '';

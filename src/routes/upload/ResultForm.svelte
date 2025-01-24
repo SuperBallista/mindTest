@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Result } from '$lib/types';
-  import { testStore, access } from '$lib/stores/testStore'; // ✅ testStore 가져오기
+  import { testStore } from '$lib/stores/QuestionStore'; // ✅ testStore 가져오기
+import { access } from '$lib/stores/userStore';
 
   export let result: Result;
   export let rIndex: number;

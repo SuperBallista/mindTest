@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { userId, username } from '$lib/stores/testStore';
+    import { userId, username } from '$lib/stores/userStore';
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
 

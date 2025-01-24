@@ -1,11 +1,14 @@
 <script lang="ts">
     import TemporaryTest from '$lib/components/TemporaryTest.svelte';
-    import { access, authFetch, testStore, userId, isEditMode } from '$lib/stores/testStore';
+    import { access, authFetch } from '$lib/stores/userStore';
+    import { userId} from '$lib/stores/userStore';
+    import { testStore } from '$lib/stores/QuestionStore';
+    import { isEditMode } from '$lib/stores/postStore'
     import QuestionForm from './QuestionForm.svelte';
     import ResultForm from './ResultForm.svelte';
     import { writable, get } from 'svelte/store';
     import { onMount, onDestroy } from 'svelte';
-    import { goto } from "$app/navigation";    
+    import { goto } from '$app/navigation';
 
 
     export const isModalOpen = writable(false);

@@ -1,6 +1,8 @@
 import { AppDataSource } from '$lib/ormconfig';
 import { Post } from '$lib/entities/Post';
 
+
+
 export async function load({ }) {
     // ✅ DB가 초기화되지 않았으면 초기화
     if (!AppDataSource.isInitialized) {

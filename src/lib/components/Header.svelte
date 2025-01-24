@@ -1,8 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { access, authFetch } from "$lib/stores/testStore";
+    import { access, authFetch } from "$lib/stores/userStore";
+    import { currentPage, fetchPosts } from "$lib/stores/postStore";
     import { goto } from "$app/navigation";
-    
+
 
     export let title = '땅콩 테스트';
 
@@ -32,12 +33,8 @@
         isMenuOpen = !isMenuOpen;
     }
 
-// ✅ 페이지 이동 함수 (강제 데이터 갱신 추가)
 
 
-function navigateTo(url: string) {
-        goto(`/list?to=${encodeURIComponent(url)}`);
-    }
     
 // ✅ 페이지가 실행될 때 항상 토큰 체크 실행
 checkRefreshToken();
@@ -73,7 +70,7 @@ onMount(() => {
                     <li>
                         <button 
                             class="hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
-                            on:click={() => navigateTo(`/list/${category}/1`)}
+                            on:click={() => { goto(`/list`) ; currentPage.set(1)  ; fetchPosts(category,$currentPage)} }
                         >
                             {category}
                         </button>
@@ -85,7 +82,7 @@ onMount(() => {
                     <li>
                         <button 
                             class="hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
-                            on:click={() => navigateTo("/login")}
+                            on:click={() => goto("/login")}
                         >
                             로그인
                         </button>
@@ -94,7 +91,7 @@ onMount(() => {
                     <li>
                         <button 
                             class="hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
-                            on:click={() => navigateTo("/upload")}
+                            on:click={() => goto("/upload")}
                         >
                             올리기
                         </button>
@@ -102,7 +99,7 @@ onMount(() => {
                     <li>
                         <button 
                             class="hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
-                            on:click={() => navigateTo("/my-info")}
+                            on:click={() => goto("/my-info")}
                         >
                             내정보
                         </button>
@@ -121,7 +118,7 @@ onMount(() => {
                     <li>
                         <button 
                             class="block hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
-                            on:click={() => navigateTo(`/list/${category}/1`)}
+                            on:click={() => { goto(`/list`) ; currentPage.set(1)  ; fetchPosts(category,$currentPage)} }
                         >
                             {category}
                         </button>
@@ -133,7 +130,7 @@ onMount(() => {
                     <li>
                         <button 
                             class="block hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
-                            on:click={() => navigateTo("/login")}
+                            on:click={() => goto("/login")}
                         >
                             로그인
                         </button>

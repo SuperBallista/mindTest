@@ -1,7 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { AppDataSource } from '$lib/ormconfig';
 import { Post } from '$lib/entities/Post';
-import { config } from "$lib/config";
 import { User } from '$lib/entities/User.js';
 
 

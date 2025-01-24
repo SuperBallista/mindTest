@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { scoreObject, nextPage } from "$lib/stores/testStore.js";
-    import { goto } from "$app/navigation";
+    import { scoreObject, nextPage} from "$lib/stores/QuestionStore.js";
+    import { goto } from '$app/navigation';
 
     let questionId = $nextPage; // ✅ 현재 테스트 ID
 

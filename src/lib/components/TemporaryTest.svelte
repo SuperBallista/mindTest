@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { testStore, authFetch } from '$lib/stores/testStore';
+    import { authFetch } from '$lib/stores/userStore';
+    import { testStore } from '$lib/stores/QuestionStore';
   
     // ✅ 올바른 타입 정의
     interface TempTest {

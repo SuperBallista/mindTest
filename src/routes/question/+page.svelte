@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Choice, Result } from "$lib/types"; // ✅ 타입 가져오기
-import { ReadingPost, index } from "$lib/stores/testStore";
-import { goto } from "$app/navigation"; // ✅ SvelteKit 페이지 이동 함수
+import { ReadingPost, index } from "$lib/stores/QuestionStore";
+import { goto } from '$app/navigation';
 
 
 let scores: Record<string, number> = {}; // 점수 저장 객체
@@ -13,8 +13,8 @@ if ($ReadingPost===null) {
     console.warn("⚠️ $ReadingPost가 null입니다.");
 } else {
     // ✅ 안전한 데이터 접근
-    $: choices = $ReadingPost?.questions?.[$index]?.choices ?? [];
-    $: question = $ReadingPost?.questions?.[$index]?.text ?? "질문을 불러올 수 없습니다.";
+    choices = $ReadingPost?.questions?.[$index]?.choices ?? [];
+    question = $ReadingPost?.questions?.[$index]?.text ?? "질문을 불러올 수 없습니다.";
 }
 
 // ✅ 점수 업데이트 함수
@@ -106,26 +106,13 @@ function next(score: number, scoreName: string, nextQ: number | null, resultId: 
 
     if (!$ReadingPost || !$ReadingPost.questions || $ReadingPost.questions.length === 0) return;
 
-
-    const nextIndex = Number(nextQ);
-    if (!isNaN(nextIndex) && nextIndex >= 0 && nextIndex < $ReadingPost.questions.length) {
-        index.set(nextIndex);
+    if (typeof nextQ === "number" && nextQ >= 0 && nextQ < $ReadingPost.questions.length) {
+        index.set(nextQ);
         choices = $ReadingPost.questions[$index].choices ?? [];
         question = $ReadingPost.questions[$index].text ?? "질문을 불러올 수 없습니다.";
-    } else if (resultId !== null && resultId !== undefined && resultId !== "") {
+    } else if (typeof resultId === "string" && resultId !== "") {
         goto(`/result/${resultId}`);
-    } else if ($index + 1 < $ReadingPost.questions.length)
-    {
-        index.set($index+1)
-        console.log("다음 질문으로 넘어갑니다")
-        goto("/question/next")
-        choices = $ReadingPost.questions[$index].choices ?? [];
-        question = $ReadingPost.questions[$index].text ?? "질문을 불러올 수 없습니다.";
-    }
-    
-    
-    
-    else {
+    } else {
         console.log("✅ 모든 질문 완료! 결과 계산 중...");
         const finalResultId = findMatchingResult(scores, $ReadingPost.results ?? [], $ReadingPost.id ?? "", $ReadingPost.resultType ?? "score");
 

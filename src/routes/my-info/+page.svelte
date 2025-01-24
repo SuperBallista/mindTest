@@ -1,9 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { writable } from "svelte/store";
-    import { authFetch } from "$lib/stores/testStore"; // ✅ 인증된 API 요청 함수
-    import { access, userId, username } from "$lib/stores/testStore";
-    import { goto } from "$app/navigation";
+    import { goto } from '$app/navigation';
+    import { access, userId, username, authFetch } from "$lib/stores/userStore";
 
 
 

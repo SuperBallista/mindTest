@@ -1,6 +1,6 @@
 <script lang="ts">
-import { goto } from "$app/navigation";
 import CommentSection from '$lib/components/CommentSection.svelte';
+import { goto } from '$app/navigation';
 import { onMount } from "svelte";
 
 export let data;

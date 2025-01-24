@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { goto } from "$app/navigation";
-    import { authFetch } from "$lib/stores/testStore";
+    import { authFetch } from "$lib/stores/userStore";
+    import { goto } from '$app/navigation';
 
     let nickname = "";
     let user = null;

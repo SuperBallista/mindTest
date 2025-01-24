@@ -1,8 +1,10 @@
-<script lang="ts">
-    import { index, isEditMode, ReadingPost, scoreObject } from '$lib/stores/testStore.js';
-    import { userId, testStore, authFetch } from '$lib/stores/testStore'; // ✅ 사용자 ID 저장소 가져오기
-    import { goto } from "$app/navigation";
+<script lang=ts">
+    import { isEditMode} from '$lib/stores/postStore';
+    import { index, testStore, ReadingPost, scoreObject } from '$lib/stores/QuestionStore';
     
+    import { userId, authFetch } from '$lib/stores/userStore.js'; // ✅ 사용자 ID 저장소 가져오기
+    import { goto } from '$app/navigation';
+
     const BASE_URL = import.meta.env.VITE_BASE_URL
 
     export let data;
