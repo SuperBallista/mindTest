@@ -1,20 +1,19 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import { config } from "$lib/config";
 import { AppDataSource } from '$lib/ormconfig';
 import { User } from '$lib/entities/User';
 
-dotenv.config();
 
 // ✅ Nodemailer 설정
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
+  host: config.SMTP_HOST,
+  port: Number(config.SMTP_PORT),
   secure: false, // TLS 사용 (port 587)
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    user: config.EMAIL_USER,
+    pass: config.EMAIL_PASS
   }
 });
 
@@ -34,12 +33,12 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // ✅ JWT 토큰 생성 (10분 유효)
-    const token = jwt.sign({ email }, process.env.JWT_SECRET as string, { expiresIn: '10m' });
+    const token = jwt.sign({ email }, config.JWT_SECRET as string, { expiresIn: '10m' });
 
-    const resetUrl = `${process.env.BASE_URL}/reset-password?token=${token}`;
+    const resetUrl = `${config.BASE_URL}/reset-password?token=${token}`;
 
     const mailOptions = {
-      from: `"땅콩 테스트" <${process.env.EMAIL_USER}>`,
+      from: `"땅콩 테스트" <${config.EMAIL_USER}>`,
       to: email,
       subject: '비밀번호 재설정 요청',
       html: `

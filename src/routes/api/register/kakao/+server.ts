@@ -26,20 +26,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
 
 
-                // ✅ 5. 사용자가 있으면 JWT 생성 후 쿠키 저장
-                       const {accessToken, refreshToken, localServer} = createTokens(new User)
-                
-                
-                // ✅ Refresh Token을 httpOnly 쿠키에 저장
-                const headers = new Headers();
-                headers.append('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=${7 * 24 * 60 * 60}; ${ localServer ? "" : "Secure" }; SameSite=Strict`);
-        
-                return new Response(JSON.stringify({
-                    success: true,
-                    message: '로그인 성공!',
-                    accessToken
-                }), { status: 200, headers });
-    
+        const { accessToken, refreshTokenCookie } = createTokens(newUser);
+
+        return new Response(JSON.stringify({ success: true, message: "로그인 성공!", accessToken }), {
+            status: 200,
+            headers: new Headers({ "Set-Cookie": refreshTokenCookie }),
+        });
 
     } catch (error) {
         console.error("❌ 회원가입 오류:", error);

@@ -41,7 +41,7 @@ export const handle: Handle = async ({ event, resolve }) => {
                 console.log("🔄 새 액세스 토큰 발급:", newAccessToken); // ✅ 새로운 액세스 토큰 로그 추가
                 if (newAccessToken === "none") throw new Error("❌ 리프레시 토큰 검증 실패");
 
-                const user = await verifyToken(newAccessToken);
+                const user = await verifyToken(newAccessToken as string);
                 console.log("✅ 새 액세스 토큰으로 유저 인증 성공:", user); // ✅ 유저 정보 확인
                 event.locals.user = user; 
                 

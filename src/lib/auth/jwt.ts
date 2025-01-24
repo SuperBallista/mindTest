@@ -1,29 +1,23 @@
-import jwt from 'jsonwebtoken';
-import type { User } from '$lib/entities/User';
-import dotenv from "dotenv"
+import jwt from "jsonwebtoken";
+import { User } from "$lib/entities/User";
+import { config } from "$lib/config";
 
-dotenv.config();
 
-const secret = process.env.JWT_SECRET || "jwt_secret"
-const refreshSecret = process.env.JWT_REFRESH || 'jwt_refresh';
-const localServer = process.env.LOCAL_DB === "true" || false;
+
+
+const ACCESS_TOKEN_SECRET = config.JWT_SECRET
+const REFRESH_TOKEN_SECRET = config.JWT_REFRESH;
+const IS_LOCAL = config.LOCAL_DB; // 개발 환경 여부
 
 export function createTokens(user: User) {
-  const accessToken = jwt.sign(
-    { id: user.id, username: user.username }, 
-    secret,
-    { expiresIn: '3h' }
-  );
+    const accessToken = jwt.sign({ userId: user.id, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+    const refreshToken = jwt.sign({ userId: user.id, username: user.username }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 
-  const refreshToken = jwt.sign(
-    { id: user.id, username: user.username },
-    refreshSecret,
-    { expiresIn: '7d' }
-  );
+    // Refresh Token을 httpOnly 쿠키로 설정
+    const refreshTokenCookie = `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=${7 * 24 * 60 * 60}; ${IS_LOCAL ? "SameSite=None" : "Secure; SameSite=Strict"}`;
 
-  return {
-    accessToken,
-    refreshToken,
-    localServer
-  };
+    return {
+        accessToken,
+        refreshTokenCookie, // 쿠키를 반환하도록 수정
+    };
 }

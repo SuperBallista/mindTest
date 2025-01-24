@@ -1,20 +1,17 @@
 import { redirect } from "@sveltejs/kit";
 import type { RequestHandler } from "@sveltejs/kit";
-import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
 import { AppDataSource } from "$lib/ormconfig";
 import { User } from "$lib/entities/User";
 import { createTokens } from "$lib/auth/jwt";
+import { config } from "$lib/config";
 
-dotenv.config();
+const GOOGLE_CLIENT_ID = config.GOOGLE_CLIENT_ID!;
+const GOOGLE_CLIENT_SECRET = config.GOOGLE_CLIENT_SECRET!;
+const GOOGLE_REDIRECT_URI = config.GOOGLE_REDIRECT_URI!;
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI!;
-
-const secret = process.env.JWT_SECRET || '908aseiodfosaklsjdjasduldkjasdl%*^#%^&^&%@@SD';
-const refreshSecret = process.env.JWT_REFRESH || '908aseiodfosasdasdasdaklsjdjl%*^#%IUDWAsHKJDkCX^&^&%@@SD';
-const localServer = process.env.LOCAL_DB || false;
+const secret = config.JWT_SECRET || '908aseiodfosaklsjdjasduldkjasdl%*^#%^&^&%@@SD';
+const refreshSecret = config.JWT_REFRESH || '908aseiodfosasdasdasdaklsjdjl%*^#%IUDWAsHKJDkCX^&^&%@@SD';
+const localServer = config.LOCAL_DB || false;
 
 export const GET: RequestHandler = async ({ url }) => {
     const code = url.searchParams.get("code");
@@ -69,22 +66,16 @@ export const GET: RequestHandler = async ({ url }) => {
 
 
         
-        // ✅ 5. 사용자가 있으면 JWT 생성 후 쿠키 저장
-       const {accessToken, refreshToken, localServer} = createTokens(new User)
 
+        const { accessToken, refreshTokenCookie } = createTokens(existingUser);
 
-        // ✅ Refresh Token을 httpOnly 쿠키에 저장
-        const headers = new Headers();
-        headers.append('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=${7 * 24 * 60 * 60}; ${ localServer ? "" : "Secure" }; SameSite=Strict`);
-
-        return new Response(JSON.stringify({
-            success: true,
-            message: '로그인 성공!',
-            accessToken
-        }), { status: 200, headers });
+        return new Response(JSON.stringify({ success: true, message: "로그인 성공!", accessToken }), {
+            status: 200,
+            headers: new Headers({ "Set-Cookie": refreshTokenCookie }),
+        });
 
     } catch (error) {
-        console.error("Google 로그인 실패:", error);
-        throw redirect(302, "/login?error=server_error");
+        console.error("로그인 오류:", error);
+        return new Response(JSON.stringify({ success: false, message: "서버 오류 발생" }), { status: 500 });
     }
 };

@@ -3,9 +3,8 @@ import { User } from '$lib/entities/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { AppDataSource } from '$lib/ormconfig';
-import dotenv from 'dotenv';
+import { config } from "$lib/config";
 
-dotenv.config();
 
 export const POST: RequestHandler = async ({ request }) => {
     try {
@@ -24,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // ✅ 토큰 검증
         let email: string;
         try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { email: string };
+            const decoded = jwt.verify(token, config.JWT_SECRET) as { email: string };
             email = decoded.email;
         } catch (error) {
             return new Response(JSON.stringify({ success: false, message: "토큰이 유효하지 않거나 만료되었습니다." }), { status: 401 });

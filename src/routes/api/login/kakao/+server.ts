@@ -1,14 +1,12 @@
 import { redirect } from "@sveltejs/kit";
 import type { RequestHandler } from "@sveltejs/kit";
-import dotenv from "dotenv";
 import { AppDataSource } from "$lib/ormconfig";
 import { User } from "$lib/entities/User";
 import { createTokens } from "$lib/auth/jwt";
+import { config } from "$lib/config";
 
-dotenv.config();
-
-const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID!;
-const KAKAO_REDIRECT_URI = process.env.KAKAO_REDIRECT_URI!;
+const KAKAO_CLIENT_ID = config.KAKAO_CLIENT_ID!;
+const KAKAO_REDIRECT_URI = config.KAKAO_REDIRECT_URI!;
 
 export const GET: RequestHandler = async ({ url }) => {
     const code = url.searchParams.get("code");
@@ -63,22 +61,15 @@ export const GET: RequestHandler = async ({ url }) => {
         }
 
 
-        // ✅ 5. 사용자가 있으면 JWT 생성 후 쿠키 저장
-               const {accessToken, refreshToken, localServer} = createTokens(new User)
-        
-        
-        // ✅ Refresh Token을 httpOnly 쿠키에 저장
-        const headers = new Headers();
-        headers.append('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=${7 * 24 * 60 * 60}; ${ localServer ? "" : "Secure" }; SameSite=Strict`);
+        const { accessToken, refreshTokenCookie } = createTokens(existingUser);
 
-        return new Response(JSON.stringify({
-            success: true,
-            message: '로그인 성공!',
-            accessToken
-        }), { status: 200, headers });
+        return new Response(JSON.stringify({ success: true, message: "로그인 성공!", accessToken }), {
+            status: 200,
+            headers: new Headers({ "Set-Cookie": refreshTokenCookie }),
+        });
 
     } catch (error) {
-        console.error("Kakao 로그인 실패:", error);
-        throw redirect(302, "/login?error=server_error");
+        console.error("로그인 오류:", error);
+        return new Response(JSON.stringify({ success: false, message: "서버 오류 발생" }), { status: 500 });
     }
 };

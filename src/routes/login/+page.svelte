@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { userId, username, access, origin } from '$lib/stores/testStore';
+  import { userId, username, access } from '$lib/stores/testStore';
   import { jwtDecode } from 'jwt-decode'; // ✅ named import 사용
 
 

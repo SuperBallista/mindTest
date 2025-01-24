@@ -1,17 +1,14 @@
 import type { RequestHandler } from "@sveltejs/kit";
-import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { AppDataSource } from "$lib/ormconfig";
 import { User } from "$lib/entities/User";
+import { config } from "$lib/config";
 
-dotenv.config();
-
-const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID!;
-const KAKAO_CLIENT_SECRET = process.env.KAKAO_CLIENT_SECRET!;
-const KAKAO_REDIRECT_URI = process.env.KAKAO_REDIRECT_URI!;
-const JWT_SECRET = process.env.JWT_SECRET || "default-secret-key";
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "default-refresh-key";
-const LOCAL_SERVER = process.env.LOCAL_DB !== "false";
+const KAKAO_CLIENT_ID = config.KAKAO_CLIENT_ID;
+const KAKAO_REDIRECT_URI = config.KAKAO_REDIRECT_URI;
+const JWT_SECRET = config.JWT_SECRET
+const JWT_REFRESH_SECRET = config.JWT_REFRESH;
+const LOCAL_SERVER = config.LOCAL_DB;
 
 export const GET: RequestHandler = async ({ url }) => {
     const code = url.searchParams.get("code");
@@ -28,7 +25,6 @@ export const GET: RequestHandler = async ({ url }) => {
             body: new URLSearchParams({
                 grant_type: "authorization_code",
                 client_id: KAKAO_CLIENT_ID,
-                client_secret: KAKAO_CLIENT_SECRET,
                 redirect_uri: KAKAO_REDIRECT_URI,
                 code,
             }),

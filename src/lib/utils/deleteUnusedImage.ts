@@ -1,14 +1,12 @@
 import { AppDataSource } from '$lib/ormconfig';
 import { TempUpload } from '$lib/entities/TempUpload';
 import { v2 as cloudinary } from 'cloudinary';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { config } from "$lib/config";
 
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_API_SECRET
+    cloud_name: config.CLOUD_NAME,
+    api_key: config.CLOUD_API_KEY,
+    api_secret: config.CLOUD_API_SECRET
 });
 
 export async function deleteOldUnusedImages() {

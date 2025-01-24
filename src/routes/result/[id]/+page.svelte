@@ -7,6 +7,7 @@ export let data;
 
 let hasLiked = false;
 let hasDisliked = false;
+const BASE_URL = import.meta.env.BASE_URL
 
 onMount(() => {
     // ✅ 로컬 스토리지에서 추천/비추천 여부 확인
@@ -86,12 +87,12 @@ function shareTest() {
         navigator.share({
             title: data.title,
             text: data.description || "",
-            url: `${data.domain}/result/${data.id}`
+            url: `${BASE_URL}/result/${data.id}`
         })
         .then(() => console.log('✅ 공유 성공'))
         .catch((error) => console.error('❌ 공유 실패:', error));
     } else {
-        navigator.clipboard.writeText(`${data.domain}/result/${data.id}`);
+        navigator.clipboard.writeText(`${BASE_URL}/result/${data.id}`);
         alert("📋 주소가 복사되었습니다!");
     }
 }
@@ -109,7 +110,7 @@ function shareTest() {
     <meta property="og:title" content={data.title} />
     <meta property="og:description" content={data.description} />
     <meta property="og:image" content={data.image} />
-    <meta property="og:url" content={`${data.domain}/result/${data.id}`} />
+    <meta property="og:url" content={`${BASE_URL}/result/${data.id}`} />
     <meta property="og:site_name" content="땅콩 테스트" />
 
     <!-- Twitter Card: 트위터 공유 시 사용 -->
@@ -134,10 +135,8 @@ function shareTest() {
         <h1 class="text-3xl font-bold text-gray-900 mb-5 text-center">{data.title}</h1>
 
         <!-- 결과 이미지 -->
-        {#if data.image}
-            <img src={data.image} alt="결과 이미지" 
-                class="w-full h-64 object-cover rounded-lg shadow-md border border-gray-300 mb-5" />
-        {/if}
+            <img src={data.image || "/images/basic_result.jpg"} alt="결과 이미지" 
+                class="w-full h-full object-cover rounded-lg shadow-md border border-gray-300 mb-5" />
 
         <!-- 결과 설명 -->
         <p class="text-gray-700 text-lg mb-6 leading-relaxed">{data.description}</p>

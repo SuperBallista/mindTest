@@ -2,11 +2,13 @@
     import { isEditMode, ReadingPost, scoreObject } from '$lib/stores/testStore.js';
     import { userId, testStore, authFetch } from '$lib/stores/testStore'; // ✅ 사용자 ID 저장소 가져오기
     import { goto } from "$app/navigation";
+    
+    const BASE_URL = import.meta.env.BASE_URL
 
     export let data;
 
     function shareTest() {
-        const shareUrl = `${data.domain}/${data.id}`;
+        const shareUrl = `${BASE_URL}/${data.id}`;
 
         if (navigator.share) {
             navigator.share({
@@ -72,7 +74,7 @@ async function editTest() {
             class="w-full h-64 object-cover rounded-lg shadow-md border border-gray-300 mb-5" />
 
         <p class="text-gray-700 text-base mb-6 leading-relaxed">{data.description}</p>
-        <p class="text-gray-700 text-base mb-6 leading-relaxed">올린 사람 : {data.user}</p>
+        <p class="text-gray-700 text-base mb-6 leading-relaxed">올린 사람 : {data.writerName || "삭제된 계정"}</p>
 
         <div class="flex space-x-4 justify-center">
             <a href="/question" on:click={() => {{scoreObject.set({})}; ReadingPost.set(data.content)}}
@@ -103,12 +105,12 @@ async function editTest() {
 
 <!-- ✅ 작성자만 볼 수 있는 수정 / 삭제 버튼 -->
     <div class="hidden md:flex justify-center mt-4 space-x-4">
-        {#if $userId === data.userId}
+        {#if $userId === data.writerName}
         <button on:click={editTest} class="px-4 py-2 text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg text-sm font-semibold transition-all shadow">
             ✏️ 수정하기
         </button>
         {/if}
-        {#if $userId === data.userId}
+        {#if $userId === data.writerName}
         <button on:click={deleteTest} class="px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded-lg text-sm font-semibold transition-all shadow">
             🗑 삭제하기
         </button>

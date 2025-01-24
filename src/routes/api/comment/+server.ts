@@ -1,13 +1,12 @@
 import { json } from '@sveltejs/kit';
 import { AppDataSource } from '$lib/ormconfig';
 import { Comment } from '$lib/entities/Comment';
-import { verifyAuth } from '$lib/server/auth';
 import type { RequestEvent } from '@sveltejs/kit';
 import { User } from '$lib/entities/User';
 
 export const POST = async (event: RequestEvent) => {
     try {
-        let user = await verifyAuth(event); // ✅ 로그인 사용자 확인 (null 가능)
+        let user = event.locals.user // ✅ 로그인 사용자 확인 (null 가능)
 
         const { testId, text } = await event.request.json();
         if (!testId || !text.trim()) {

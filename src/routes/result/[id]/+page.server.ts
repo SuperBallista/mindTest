@@ -2,9 +2,9 @@ import { error } from '@sveltejs/kit';
 import { AppDataSource } from '$lib/ormconfig';
 import { Result } from '$lib/entities/Result';
 import { Post } from '$lib/entities/Post';
-import dotenv from "dotenv"
 
-dotenv.config();
+import { config } from "$lib/config";
+
 
 /**
  * ✅ 결과 페이지 데이터 로드 함수
@@ -41,7 +41,6 @@ export async function load({ params }) {
     }
 
     return {
-        domain: process.env.BASE_URL,
         postId,
         id: result.id,
         title: result.title,

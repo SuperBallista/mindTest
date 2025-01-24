@@ -6,7 +6,7 @@ import { Result } from '$lib/entities/Result';
 import { TempUpload } from '$lib/entities/TempUpload';
 import { User } from '$lib/entities/User';
 import { v4 as uuid } from 'uuid';
-import type { TestData, Choice, Question, Result as TestResult } from '$lib/types';
+import type { TestData, Result as TestResult } from '$lib/types';
 export const POST: RequestHandler = async ({ request, locals }) => {
     const queryRunner = AppDataSource.createQueryRunner();
     await queryRunner.startTransaction();
@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
         // ✅ 2. 새로운 게시글인지 수정인지 판별
         const isEdit = Boolean(requestData.id);
-        const postId = requestData.id ?? uuid();
+        const postId = (requestData.id && requestData.id !== "") ? requestData.id : uuid();
         requestData.id = postId;
 
         console.log(`📌 ${isEdit ? '수정' : '새로'} 등록 - postId:`, postId);
@@ -104,6 +104,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 existingResult.description = result.description;
                 existingResult.image = result.image;
                 existingResult.type = resultType;
+
+
+            // 결과 업로드 이미지 정리
+
+            if (existingResult.image) {
+                await tempUploadRepository
+                    .createQueryBuilder()
+                    .delete()
+                    .where("file_path = :image", { image: existingResult.image })
+                    .execute();
+            }
+    
+
+
                 await queryRunner.manager.save(existingResult);
             } else {
                 // ✅ 새로운 결과 추가 (미리 생성된 UUID 사용)
@@ -115,8 +129,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                     type: resultType,
                     title: result.title,
                 });
-                await queryRunner.manager.save(newResult);
+
+            // 결과 업로드 이미지 정리
+
+            if (newResult.image) {
+                await tempUploadRepository
+                    .createQueryBuilder()
+                    .delete()
+                    .where("file_path = :image", { image: newResult.image })
+                    .execute();
             }
+    
+                await queryRunner.manager.save(newResult);
+
+            }
+
         }
 
         // ✅ 10. 임시 업로드된 이미지 정리
@@ -127,6 +154,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 .where("file_path = :image", { image })
                 .execute();
         }
+
+
+
+        
 
         await queryRunner.commitTransaction();
         return json({ success: true, message: '게시글이 성공적으로 저장되었습니다.', postId });

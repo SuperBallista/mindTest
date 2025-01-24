@@ -6,7 +6,6 @@ export class Post {
     @PrimaryColumn({type: 'varchar', length: 36}) // ✅ UUID 자동 생성
     id: string;
 
-
     @ManyToOne(() => User, { onDelete: 'CASCADE' }) // ✅ FK 관계 명확화
     @JoinColumn({ name: "user_id" }) // ✅ FK 컬럼명 지정
     user: User; // FK → users.id

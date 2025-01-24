@@ -1,17 +1,15 @@
 import type { RequestHandler } from "@sveltejs/kit";
-import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { AppDataSource } from "$lib/ormconfig";
 import { User } from "$lib/entities/User";
+import { config } from "$lib/config";
 
-dotenv.config();
-
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI!;
-const JWT_SECRET = process.env.JWT_SECRET || "default-secret-key";
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "default-refresh-key";
-const LOCAL_SERVER = process.env.LOCAL_DB !== "false";
+const GOOGLE_CLIENT_ID = config.GOOGLE_CLIENT_ID!;
+const GOOGLE_CLIENT_SECRET = config.GOOGLE_CLIENT_SECRET!;
+const GOOGLE_REDIRECT_URI = config.GOOGLE_REDIRECT_URI!;
+const JWT_SECRET = config.JWT_SECRET;
+const JWT_REFRESH_SECRET = config.JWT_REFRESH;
+const LOCAL_SERVER = config.LOCAL_DB;
 
 export const GET: RequestHandler = async ({ url }) => {
     const code = url.searchParams.get("code");

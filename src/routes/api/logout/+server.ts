@@ -1,13 +1,11 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import dotenv from 'dotenv';
+import { config } from "$lib/config";
 
-
-dotenv.config();
 
 
 export const POST: RequestHandler = async () => {
 
-const localServer = process.env.LOCAL_DB || false
+const localServer = config.LOCAL_DB;
   try {
     const headers = new Headers();
     headers.append(

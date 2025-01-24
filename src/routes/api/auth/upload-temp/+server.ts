@@ -1,15 +1,14 @@
 import { json } from '@sveltejs/kit';
 import { v2 as cloudinary } from 'cloudinary';
 import { Readable } from 'stream';
-import dotenv from 'dotenv';
+import { config } from "$lib/config";
 import { AppDataSource } from '$lib/ormconfig';
 import { TempUpload } from '$lib/entities/TempUpload';
 
-dotenv.config();
 
 // ✅ Cloudinary 설정
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
+    cloud_name: config.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
     api_secret: process.env.CLOUD_API_SECRET
 });
@@ -64,7 +63,7 @@ export async function POST({ request }) {
 async function saveImageToDB(file_path: string) {
     try {
         const tempImageRepo = AppDataSource.getRepository(TempUpload);
-        const newImage = tempImageRepo.create({ file_path});
+        const newImage = tempImageRepo.create({ file_path, temp_posts_id:null});
         await tempImageRepo.save(newImage);
     } catch (dbError) {
         console.error('DB 저장 중 오류 발생:', dbError);

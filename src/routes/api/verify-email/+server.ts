@@ -1,8 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken'; // ✅ ESM 방식으로 변경
-import dotenv from 'dotenv';
+import { config } from "$lib/config";
 
-dotenv.config();
 
 export const GET: RequestHandler = async ({ url }) => {
   const token = url.searchParams.get('token');
@@ -13,7 +12,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   try {
     // ✅ JWT 검증
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { email: string };
+    const decoded = jwt.verify(token, config.JWT_SECRET as string) as { email: string };
     console.log(`인증된 이메일: ${decoded.email}`);
 
     return new Response(JSON.stringify({ success: true, message: '이메일 인증 성공', email: decoded.email }), { status: 200 });
