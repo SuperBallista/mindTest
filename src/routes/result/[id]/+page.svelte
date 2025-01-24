@@ -7,7 +7,7 @@ export let data;
 
 let hasLiked = false;
 let hasDisliked = false;
-const BASE_URL = import.meta.env.BASE_URL
+const BASE_URL = import.meta.env.VITE_BASE_URL
 
 onMount(() => {
     // ✅ 로컬 스토리지에서 추천/비추천 여부 확인

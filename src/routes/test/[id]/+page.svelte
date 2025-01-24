@@ -3,7 +3,7 @@
     import { userId, testStore, authFetch } from '$lib/stores/testStore'; // ✅ 사용자 ID 저장소 가져오기
     import { goto } from "$app/navigation";
     
-    const BASE_URL = import.meta.env.BASE_URL
+    const BASE_URL = import.meta.env.VITE_BASE_URL
 
     export let data;
 
