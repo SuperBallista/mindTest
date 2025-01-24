@@ -1,11 +1,9 @@
 <script lang="ts">
 import type { Choice, Result } from "$lib/types"; // ✅ 타입 가져오기
-import { ReadingPost } from "$lib/stores/testStore";
+import { ReadingPost, index } from "$lib/stores/testStore";
 import { goto } from "$app/navigation"; // ✅ SvelteKit 페이지 이동 함수
 
 
-// ✅ 변수 초기화 (타입 명확하게 지정)
-let index: number = 0; // 현재 질문 번호
 let scores: Record<string, number> = {}; // 점수 저장 객체
 let choices: Choice[] = [];
 let question: string = "질문을 불러올 수 없습니다.";
@@ -15,8 +13,8 @@ if ($ReadingPost===null) {
     console.warn("⚠️ $ReadingPost가 null입니다.");
 } else {
     // ✅ 안전한 데이터 접근
-    $: choices = $ReadingPost?.questions?.[index]?.choices ?? [];
-    $: question = $ReadingPost?.questions?.[index]?.text ?? "질문을 불러올 수 없습니다.";
+    $: choices = $ReadingPost?.questions?.[$index]?.choices ?? [];
+    $: question = $ReadingPost?.questions?.[$index]?.text ?? "질문을 불러올 수 없습니다.";
 }
 
 // ✅ 점수 업데이트 함수
@@ -111,17 +109,18 @@ function next(score: number, scoreName: string, nextQ: number | null, resultId: 
 
     const nextIndex = Number(nextQ);
     if (!isNaN(nextIndex) && nextIndex >= 0 && nextIndex < $ReadingPost.questions.length) {
-        index = nextIndex;
-        choices = $ReadingPost.questions[index].choices ?? [];
-        question = $ReadingPost.questions[index].text ?? "질문을 불러올 수 없습니다.";
+        index.set(nextIndex);
+        choices = $ReadingPost.questions[$index].choices ?? [];
+        question = $ReadingPost.questions[$index].text ?? "질문을 불러올 수 없습니다.";
     } else if (resultId !== null && resultId !== undefined && resultId !== "") {
         goto(`/result/${resultId}`);
-    } else if (index + 1 > $ReadingPost.questions.length)
+    } else if ($index + 1 > $ReadingPost.questions.length)
     {
-        index += 1
+        index.set($index+1)
         console.log("다음 질문으로 넘어갑니다")
-        choices = $ReadingPost.questions[index].choices ?? [];
-        question = $ReadingPost.questions[index].text ?? "질문을 불러올 수 없습니다.";
+        goto("/question/next")
+        choices = $ReadingPost.questions[$index].choices ?? [];
+        question = $ReadingPost.questions[$index].text ?? "질문을 불러올 수 없습니다.";
     }
     
     

@@ -13,6 +13,7 @@ export const countdown = writable<boolean>(false);
 // ✅ 점수 및 다음 페이지 관련 상태
 export const scoreObject = writable<Record<string, number>>({});
 export const nextPage = writable<number>(0);
+export const index = writable<number>(0);
 
 
 export interface TestData {

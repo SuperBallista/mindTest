@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { isEditMode, ReadingPost, scoreObject } from '$lib/stores/testStore.js';
+    import { index, isEditMode, ReadingPost, scoreObject } from '$lib/stores/testStore.js';
     import { userId, testStore, authFetch } from '$lib/stores/testStore'; // ✅ 사용자 ID 저장소 가져오기
     import { goto } from "$app/navigation";
     
@@ -99,7 +99,7 @@ async function editTest() {
         <p class="text-gray-700 text-base mb-6 leading-relaxed">올린 사람 : {data.writerName || "삭제된 계정"}</p>
 
         <div class="flex space-x-4 justify-center">
-            <a href="/question" on:click={() => {{scoreObject.set({})}; ReadingPost.set(data.content)}}
+            <a href="/question" on:click={() => {{scoreObject.set({})}; ReadingPost.set(data.content); index.set(0)}}
                 class="px-6 py-3 text-white bg-rose-500 hover:bg-rose-600 rounded-lg text-lg font-semibold transition-all shadow">
                 시작 🚀
             </a>
