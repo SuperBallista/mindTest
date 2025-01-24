@@ -4,9 +4,6 @@
   import { afterNavigate } from "$app/navigation";
   import "../app.css";
 
-  afterNavigate(({ to }) => {
-      console.log("✅ 페이지 변경 감지:", to?.url.pathname);
-  });
 </script>
 
 <div class="flex flex-col min-h-screen">

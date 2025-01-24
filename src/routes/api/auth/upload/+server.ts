@@ -21,7 +21,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const postId = (requestData.id && requestData.id !== "") ? requestData.id : uuid();
         requestData.id = postId;
 
-        console.log(`📌 ${isEdit ? '수정' : '새로'} 등록 - postId:`, postId);
 
         const postRepository = queryRunner.manager.getRepository(Post);
         const resultRepository = queryRunner.manager.getRepository(Result);
@@ -73,7 +72,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             });
         });
 
-        console.log("📌 최종 requestData:", JSON.stringify(requestData, null, 2));
 
         // ✅ 8. 게시글 저장 (수정이면 업데이트)
         const newPost = postRepository.create({

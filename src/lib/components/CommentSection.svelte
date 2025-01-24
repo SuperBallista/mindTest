@@ -31,7 +31,6 @@
     }
 
     onMount(async () => {
-        console.log(`📩 댓글 데이터 로드 - 테스트 ID: ${testId}`);
 
         try {
             const response = await fetch(`/api/comment?testId=${testId}`);

@@ -17,7 +17,6 @@ export async function load({ }) {
             .limit(30) // ✅ 상위 30개만 가져오기
             .getMany();
 
-        console.log("조회된 데이터:", postlist); // 🛠 로그 추가
 
         return { 
             list: postlist.map(post => ({

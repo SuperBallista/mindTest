@@ -28,7 +28,6 @@ export const GET: RequestHandler = async ({ url }) => {
             }),
         }).then((res) => res.json());
 
-        console.log("🔍 Kakao Token Response:", tokenResponse); // ✅ 응답 확인용 로그 추가
 
         if (!tokenResponse.access_token) {
             console.error("❌ Kakao OAuth 토큰 요청 실패:", tokenResponse);

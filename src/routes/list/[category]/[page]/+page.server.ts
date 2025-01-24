@@ -27,7 +27,6 @@ export const load: Load = async ({ params }) => {
             take: pageSize
         });
 
-        console.log(`✅ 데이터 로드: ${category}, 페이지 ${page}`);
 
         return {
             category,

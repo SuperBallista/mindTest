@@ -165,25 +165,20 @@
   }
 
   async function loadFromDB() {
-  console.log("🟢 loadFromDB() 실행됨!"); // ✅ 실행 확인 로그
 
   try {
     const response = await authFetch(`/temp-data?userId=${$userId}`, 'GET');
-    console.log("📌 API 응답 데이터:", response);
 
     if (response.success && Array.isArray(response.data)) {
-      console.log("✅ 데이터 변환 시작");
 const parsedData = response.data.map((test: { id: number; title: string; content: string }) => ({
         id: test.id,
         title: test.title,
         jsonData: JSON.parse(test.content) // ✅ JSON 변환 추가
       }));
 
-      console.log("✅ 변환된 데이터:", parsedData);
 
       tests.set(parsedData); // ✅ 변환된 데이터 저장
       isModalOpen.set(true); // ✅ 모달 열기
-      console.log("✅ 모달 열기 완료!");
     } else {
       console.warn("⚠️ 응답 데이터가 예상과 다름:", response);
       alert('DB에서 불러온 데이터가 없습니다.');

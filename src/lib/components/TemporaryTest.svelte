@@ -17,7 +17,6 @@
      */
     async function loadTest(testId: string) {
       try {
-        console.log(`📌 테스트 불러오기 요청: testId=${testId}`);
   
         const response = await authFetch<{ id: string; jsonData: string }>(`/temp-data/${testId}`, "GET");
   

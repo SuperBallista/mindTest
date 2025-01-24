@@ -12,7 +12,6 @@ export async function DELETE({ params }) {
     try {
         const id = params.id; // ✅ 동적 경로에서 ID 가져오기
 
-        console.log(`🗑️ DELETE 요청: ID=${id}`);
 
         const result = await tempPostRepository.delete(id);
         if (result.affected === 0) {
@@ -20,7 +19,6 @@ export async function DELETE({ params }) {
             return json({ error: '삭제할 데이터를 찾을 수 없습니다.' }, { status: 404 });
         }
 
-        console.log(`✅ 데이터 삭제 완료: ID=${id}`);
         return json({ success: true, message: '데이터 삭제 완료' });
 
     } catch (error) {
@@ -38,7 +36,6 @@ export async function GET({ params }) {
     try {
         const id = params.id; // ✅ URL 경로에서 ID 가져오기
 
-        console.log(`📌 GET 요청: ID=${id}`);
 
         const tempPost = await tempPostRepository.findOne({
             where: { id: id },

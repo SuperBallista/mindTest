@@ -19,7 +19,6 @@ export const handle: Handle = async ({ event, resolve }) => {
         let token = request.headers.get('Authorization')?.split('Bearer ')[1];
 
         try {
-            console.log("🔍 받은 액세스 토큰:", token); // ✅ 토큰 로그 추가
             if (!token) throw new Error("🔑 액세스 토큰 없음");
 
             const user = await verifyToken(token);
@@ -29,7 +28,6 @@ export const handle: Handle = async ({ event, resolve }) => {
             console.warn("❌ 액세스 토큰 검증 실패:", error);
 
             const refreshToken = cookies.get('refreshToken');
-            console.log("🔍 받은 리프레시 토큰:", refreshToken); // ✅ 리프레시 토큰 로그 추가
 
             if (!refreshToken) {
                 console.error("🔐 리프레시 토큰 없음");
@@ -38,11 +36,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 
             try {
                 const newAccessToken = await verifyRefreshToken(refreshToken);
-                console.log("🔄 새 액세스 토큰 발급:", newAccessToken); // ✅ 새로운 액세스 토큰 로그 추가
                 if (newAccessToken === "none") throw new Error("❌ 리프레시 토큰 검증 실패");
 
                 const user = await verifyToken(newAccessToken as string);
-                console.log("✅ 새 액세스 토큰으로 유저 인증 성공:", user); // ✅ 유저 정보 확인
                 event.locals.user = user; 
                 
                 const response = await resolve(event);

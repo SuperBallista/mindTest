@@ -13,7 +13,6 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     // ✅ JWT 검증
     const decoded = jwt.verify(token, config.JWT_SECRET as string) as { email: string };
-    console.log(`인증된 이메일: ${decoded.email}`);
 
     return new Response(JSON.stringify({ success: true, message: '이메일 인증 성공', email: decoded.email }), { status: 200 });
   } catch (error) {

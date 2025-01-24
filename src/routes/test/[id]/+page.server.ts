@@ -27,14 +27,10 @@ export async function load({ params }) {
 
     let writterData = null; // ✅ 기본값을 `null`로 명확하게 설정
 
-    console.log("post.user:", post.user);
-    console.log("post.user.id:", post.user?.id);
-
     if (post.user && post.user.id) {
         writterData = await userRepository.findOne({ where: { id: post.user.id } });
     }
 
-    console.log("writterData 결과:", writterData); // ✅ 디버깅용 로그 추가
 
     return {
         writerName: writterData?.username || null,

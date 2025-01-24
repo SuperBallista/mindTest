@@ -13,7 +13,6 @@
     // ✅ Access Token 체크 함수
     async function checkRefreshToken(): Promise<void> {
 
-        console.log($access)
         
         if (!$access || $access === "" || $access === undefined) { // ✅ 모든 초기값을 체크
             try {
@@ -37,7 +36,6 @@
 
 
 function navigateTo(url: string) {
-        console.log("✅ 중간 페이지를 거쳐 이동:", url);
         goto(`/list?to=${encodeURIComponent(url)}`);
     }
     

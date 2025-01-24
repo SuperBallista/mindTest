@@ -41,7 +41,6 @@ function findMatchingResult(
     // postId가 존재하는지 확인
     if ($ReadingPost){
     const filteredResults = results.filter(result => {
-        console.log(`🔍 결과 ID 비교: ${$ReadingPost.id} === ${postId}`);
         return $ReadingPost.id === postId;
     });
   
@@ -72,7 +71,6 @@ function findMatchingResult(
             if (!result.scoreRanges) continue;
             for (const range of result.scoreRanges) {
                 if (range.name === maxScoreName) {
-                    console.log(`✅ 선택된 결과: ${result.resultDBId}`);
                     return result.resultDBId ?? null;
                 }
             }
@@ -118,7 +116,6 @@ function next(score: number, scoreName: string, nextQ: number | null, resultId: 
         const finalResultId = findMatchingResult(scores, $ReadingPost?.results ?? [], $ReadingPost?.id ?? "", $ReadingPost?.resultType ?? "score");
 
         if (finalResultId) {
-            console.log(`🔍 최종 결과 (postId ${$ReadingPost?.id}): ${finalResultId}`);
             goto(`/result/${finalResultId}`);
         } else {
             console.warn(`⚠️ 결과를 찾을 수 없음, 기본 페이지로 이동`);
