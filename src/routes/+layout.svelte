@@ -1,7 +1,6 @@
 <script lang="ts">
   import Header from '$lib/components/Header.svelte';
   import Footer from '$lib/components/Footer.svelte';
-  import { afterNavigate } from "$app/navigation";
   import "../app.css";
 
 </script>
