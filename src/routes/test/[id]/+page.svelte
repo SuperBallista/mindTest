@@ -61,8 +61,30 @@ async function editTest() {
     </script>
 
 <svelte:head>
-    <title>{data.title} - 땅콩 테스트</title>
-    <meta name="description" content={data.description} />
+        <!-- 기본 SEO 메타태그 -->
+        <title>{data.title} - 테스트 결과</title>
+        <meta name="description" content={data.description} />
+        <meta name="keywords" content="심리 테스트, 성격 테스트, 결과 분석, 재미있는 테스트, 테스트 결과" />
+        <meta name="author" content="땅콩 테스트" />
+    
+        <!-- Open Graph (OG) 태그: Facebook, Kakao, Instagram -->
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={data.title} />
+        <meta property="og:description" content={data.description} />
+        <meta property="og:image" content={data.image} />
+        <meta property="og:url" content={`${BASE_URL}/test/${data.id}`} />
+        <meta property="og:site_name" content="땅콩 테스트" />
+    
+        <!-- Twitter Card: 트위터 공유 시 사용 -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={data.title} />
+        <meta name="twitter:description" content={data.description} />
+        <meta name="twitter:image" content={data.image} />
+    
+        <!-- Google SEO 최적화 -->
+        <meta itemprop="name" content={data.title} />
+        <meta itemprop="description" content={data.description} />
+        <meta itemprop="image" content={data.image} />
 </svelte:head>
 
 <div class="min-h-screen bg-slate-100 flex items-center justify-center px-4">
