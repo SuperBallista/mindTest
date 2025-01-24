@@ -34,6 +34,7 @@ export async function load({ params }) {
 
     return {
         writerName: writterData?.username || null,
+        writerId: writterData?.id || null,
         id: post.id,
         content: post.content,
         title: post.title,

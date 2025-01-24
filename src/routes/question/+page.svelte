@@ -106,10 +106,34 @@ function findMatchingResult(
 function next(score: number, scoreName: string, nextQ: number | null, resultId: string | null | undefined) {
     updateScores(scoreName, score);
 
+    if (!$ReadingPost || !$ReadingPost.questions || $ReadingPost.questions.length === 0) return;
+
     if (nextQ !== null) {
         index = nextQ;
-        choices = $ReadingPost?.questions?.[index]?.choices ?? [];
-        question = $ReadingPost?.questions?.[index]?.text ?? "질문을 불러올 수 없습니다.";
+
+        // 🚀 질문이 비어 있으면 자동으로 다음 질문으로 건너뛰는 while문 추가
+        while (
+            index < $ReadingPost.questions.length &&
+            (!$ReadingPost.questions[index].text || $ReadingPost.questions[index].choices.length === 0)
+        ) {
+            console.warn(`⚠️ 질문 ${index}이(가) 비어 있습니다. 자동으로 다음 질문으로 이동합니다.`);
+            index += 1;
+        }
+
+        if (index < $ReadingPost.questions.length) {
+            choices = $ReadingPost?.questions?.[index]?.choices ?? [];
+            question = $ReadingPost?.questions?.[index]?.text ?? "질문을 불러올 수 없습니다.";
+        } else {
+            console.log("✅ 모든 질문 완료! 결과 페이지로 이동합니다.");
+            const finalResultId = findMatchingResult(scores, $ReadingPost?.results ?? [], $ReadingPost?.id ?? "", $ReadingPost?.resultType ?? "score");
+
+            if (finalResultId) {
+                goto(`/result/${finalResultId}`);
+            } else {
+                console.warn(`⚠️ 결과를 찾을 수 없음, 기본 페이지로 이동`);
+                goto("/result/not-found");
+            }
+        }
     } else if (resultId !== null && resultId !== undefined) {
         goto(`/result/${resultId}`);
     } else {

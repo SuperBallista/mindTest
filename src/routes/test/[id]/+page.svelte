@@ -127,12 +127,12 @@ async function editTest() {
 
 <!-- ✅ 작성자만 볼 수 있는 수정 / 삭제 버튼 -->
     <div class="hidden md:flex justify-center mt-4 space-x-4">
-        {#if $userId === data.writerName}
+        {#if $userId === data.writerId}
         <button on:click={editTest} class="px-4 py-2 text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg text-sm font-semibold transition-all shadow">
             ✏️ 수정하기
         </button>
         {/if}
-        {#if $userId === data.writerName}
+        {#if $userId === data.writerId}
         <button on:click={deleteTest} class="px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded-lg text-sm font-semibold transition-all shadow">
             🗑 삭제하기
         </button>
