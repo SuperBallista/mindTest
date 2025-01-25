@@ -4,25 +4,29 @@ import { AppDataSource } from '$lib/ormconfig';
 import { Post } from '$lib/entities/Post';
 import { Result } from '$lib/entities/Result';
 import { Comment } from '$lib/entities/Comment';
+import { User } from '$lib/entities/User';
 
 
 export const DELETE: RequestHandler = async ({ params, locals }) => {
     const postId = params.id;
 
     try {
+        const userRepo = AppDataSource.getRepository(User);
         const postRepo = AppDataSource.getRepository(Post);
         const resultRepo = AppDataSource.getRepository(Result);
         const commentRepo = AppDataSource.getRepository(Comment);
 
         // ✅ 1. 게시글 찾기
-        const post = await postRepo.findOne({ where: { id: postId } });
+        const post = await postRepo.findOne({ where: { id: postId },
+            relations: ["user"] });
 
         if (!post) {
             return json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 });
         }
 
+
         // ✅ 2. 삭제 권한 확인 (작성자 또는 관리자만 삭제 가능)
-        if (post.user.id != locals.user.id) {
+        if (post.user.id !== locals.user.id) {
             return json({ error: '권한이 없습니다.' }, { status: 403 });
         }
 

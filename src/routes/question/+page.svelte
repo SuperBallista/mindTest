@@ -102,17 +102,32 @@ function findMatchingResult(
 }
 
 function next(score: number, scoreName: string, nextQ: number | null, resultId: string | null | undefined) {
-    updateScores(scoreName, score);
+    updateScores(scoreName, score);  // 변수 안에 있는 점수를 계산합니다
 
-    if (!$ReadingPost || !$ReadingPost.questions || $ReadingPost.questions.length === 0) return;
+    if (!$ReadingPost || !$ReadingPost.questions || $ReadingPost.questions.length === 0) return;  // 타입 에러를 방지합니다
 
+    // 선택지에 다음 문항이 있는 경우에는 다음 문항으로 보냅니다
     if (typeof nextQ === "number" && nextQ >= 0 && nextQ < $ReadingPost.questions.length) {
         index.set(nextQ);
         choices = $ReadingPost.questions[$index].choices ?? [];
         question = $ReadingPost.questions[$index].text ?? "질문을 불러올 수 없습니다.";
-    } else if (typeof resultId === "string" && resultId !== "") {
+    } 
+    // 선택지에 다음 문항이 없고 결과가 있는 경우에는 결과값으로 보냅니다
+    else if (typeof resultId === "string" && resultId !== "") {
         goto(`/result/${resultId}`);
-    } else {
+    }
+    // 선택지에 다음 문항이 없고 결과도 없습니다
+    else{
+        // 현재 문항보다 1 큰 문항이 존재하면 바로 뒷문항으로 보냅니다
+        if ($index < $ReadingPost.questions.length) {
+            console.log("뒷 문항으로 이동중...") 
+            index.set($index+1)
+            choices = $ReadingPost.questions[$index].choices ?? [];
+            question = $ReadingPost.questions[$index].text ?? "질문을 불러올 수 없습니다.";
+
+        } else {
+
+            // 현재 문항보다 1 큰 문항도 없으면 결과 계산에 들어갑니다
         console.log("✅ 모든 질문 완료! 결과 계산 중...");
         const finalResultId = findMatchingResult(scores, $ReadingPost.results ?? [], $ReadingPost.id ?? "", $ReadingPost.resultType ?? "score");
 
@@ -122,6 +137,8 @@ function next(score: number, scoreName: string, nextQ: number | null, resultId: 
             console.warn(`⚠️ 결과를 찾을 수 없음, 기본 페이지로 이동`);
             goto("/result/not-found");
         }
+
+    }
     }
 }
 
