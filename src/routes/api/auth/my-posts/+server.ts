@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 
         // ✅ 응답 데이터 변환
         const formattedPosts = posts.map(post => ({
-            id: post.id,
+            id: post.url,
             title: post.title,
             viewCount: post.views,
             likeCount: post.likes,
