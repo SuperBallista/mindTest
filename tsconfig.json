@@ -23,6 +23,6 @@
 		"rootDir": "./src", 
 		"types": ["@sveltejs/kit"]
 	},
-	"include": ["src/**/*"], 
-	"exclude": ["node_modules", "dist"] 
+	"include": ["src", "src/lib/types.d.ts"],
+		"exclude": ["node_modules", "dist"] 
 }

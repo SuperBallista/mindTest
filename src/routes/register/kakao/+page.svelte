@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { access, userId, username } from "$lib/stores/userStore";
+    import { userId, username } from "$lib/stores/userStore";
+    import { accessToken } from "$lib/custom/customStore";
     import { goto } from '$app/navigation';
 
     let kakaoId = "";
@@ -59,9 +60,9 @@
 
             const data = await res.json();
             if (data.success) {
-                const accessToken:string = data.accessToken
-      if (typeof accessToken === "string") {
-        access.set(data.accessToken);
+                const newAccessToken:string = data.accessToken
+      if (typeof newAccessToken === "string") {
+        accessToken.set(data.accessToken);
         const decoded = JSON.parse(atob(data.accessToken.split('.')[1])); // JWT 디코딩
         userId.set(decoded.id);
         username.set(decoded.username);

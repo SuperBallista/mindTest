@@ -33,6 +33,9 @@ interface Config {
     KAKAO_CLIENT_ID: string;
     VITE_KAKAO_REDIRECT_URI: string;
     KAKAO_REDIRECT_URI: string;
+    OPENAI_API_KEY: string;
+    TOGETHER_AI_API_KEY: string;
+    GOOGLE_AI_API_KEY:string;
 }
 
 // ✅ 환경 변수들을 안전하게 불러오기
@@ -62,4 +65,7 @@ export const config: Config = {
     KAKAO_CLIENT_ID: process.env.KAKAO_CLIENT_ID || "",
     VITE_KAKAO_REDIRECT_URI: process.env.VITE_KAKAO_REDIRECT_URI || "",
     KAKAO_REDIRECT_URI: process.env.KAKAO_REDIRECT_URI || "",
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY || "",
+    TOGETHER_AI_API_KEY: process.env.TOGETHER_AI_API_KEY || "",
+    GOOGLE_AI_API_KEY: process.env.GOOGLE_AI_API_KEY || ""
 };

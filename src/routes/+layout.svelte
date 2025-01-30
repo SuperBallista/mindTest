@@ -2,9 +2,10 @@
   import Header from '$lib/components/Header.svelte';
   import Footer from '$lib/components/Footer.svelte';
   import "../app.css";
+    import MessageBox from '$lib/custom/MessageBox.svelte';
 
 </script>
-
+<MessageBox/>
 <div class="flex flex-col min-h-screen">
   <!-- 헤더 -->
   <header>

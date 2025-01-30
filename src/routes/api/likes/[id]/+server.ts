@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import { AppDataSource } from '$lib/ormconfig';
-import { Post } from '$lib/entities/Post';
+import { Quiz } from '$lib/entities/Quiz';
 
 /**
  * ✅ [POST] 추천(👍) 증가 API
@@ -14,8 +14,8 @@ export const POST: RequestHandler = async ({ params }) => {
     }
 
     try {
-        const postRepository = AppDataSource.getRepository(Post);
-        const post = await postRepository.findOneBy({ id: postId });
+        const postRepository = AppDataSource.getRepository(Quiz);
+        const post = await postRepository.findOneBy({ id: Number(postId) });
 
         if (!post) {
             return json({ success: false, error: '게시글을 찾을 수 없습니다.' }, { status: 404 });

@@ -1,11 +1,20 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { access, authFetch } from "$lib/stores/userStore";
-    import { currentPage, fetchPosts } from "$lib/stores/postStore";
+    import { accessToken } from "$lib/custom/customStore";
     import { goto } from "$app/navigation";
+    import { authFetch, showMessageBox } from "$lib/custom/customStore";
+    import { userId } from "$lib/stores/userStore";
+    import { username } from "$lib/stores/userStore";
+    import { jwtDecode } from "jwt-decode";
+    import type { JwtPayload } from "jsonwebtoken";
+    import { editSecure, image, quizId, timer, title, url } from "$lib/stores/QuestionStore"
 
+    interface CustomJwtPayload extends JwtPayload {
+  id: string;
+  username: string;
+}
 
-    export let title = '땅콩 테스트';
+    export let header = '땅콩 테스트';
 
 
     // ✅ 카테고리 리스트
@@ -13,18 +22,29 @@
 
     // ✅ Access Token 체크 함수
     async function checkRefreshToken(): Promise<void> {
-
-        
-        if (!$access || $access === "" || $access === undefined) { // ✅ 모든 초기값을 체크
+        if (!$accessToken || $accessToken === "" || $accessToken === undefined) { // ✅ 모든 초기값을 체크
             try {
                 const response = await authFetch('/refresh', "GET");
-                if (response.success) {
-                    console.log("서버 접속 성공");
-                }
+
+                if (response.status===500)
+               { showMessageBox("error","서버 오류","서버 오류로 이용할 수 없습니다","#FCD34D") }
+
+               else if (response.status===404)
+               { showMessageBox("error","서버 접속 불가","서버 접속 불가로 이용할 수 없습니다","#FCD34D") }
+               
+
+
             } catch (error) {
                 console.error('Access Token 갱신 중 오류 발생:', error);
             }
         }
+        if ($accessToken)
+               {
+                const  decoded = jwtDecode($accessToken) as CustomJwtPayload
+                userId.set(decoded.id) 
+                username.set(decoded.username)
+               }
+
     }
 
     let isMenuOpen = false;
@@ -37,7 +57,6 @@
 
     
 // ✅ 페이지가 실행될 때 항상 토큰 체크 실행
-checkRefreshToken();
 onMount(() => {
     checkRefreshToken();
 });
@@ -51,7 +70,7 @@ onMount(() => {
         <!-- 로고 또는 제목 -->
         <a href="/">
             <h1 class="text-2xl font-bold text-[#6D4C41]">
-                <img class="logo" src="/images/logo.jpg"> {title}
+                <img class="logo" src="/images/logo.jpg"> {header}
             </h1>
         </a>
 
@@ -66,7 +85,7 @@ onMount(() => {
         <nav class="hidden sm:block">
             <ul class="flex space-x-4 items-center">
                 <!-- ✅ 카테고리 리스트 활용 -->
-                {#each categories as category}
+                <!-- {#each categories as category}
                     <li>
                         <button 
                             class="hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
@@ -75,10 +94,10 @@ onMount(() => {
                             {category}
                         </button>
                     </li>
-                {/each}
+                {/each} -->
 
                 <!-- 로그인 / 로그아웃 -->
-                {#if !$access}
+                {#if !$accessToken}
                     <li>
                         <button 
                             class="hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
@@ -91,7 +110,7 @@ onMount(() => {
                     <li>
                         <button 
                             class="hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
-                            on:click={() => goto("/upload")}
+                            on:click={() => {goto("/upload/quiz"); title.set(""); url.set(""); image.set(""); editSecure.set("public"); timer.set(0); quizId.set(undefined) }}
                         >
                             올리기
                         </button>
@@ -114,7 +133,7 @@ onMount(() => {
         <nav class="sm:hidden bg-amber-300">
             <ul class="flex flex-col items-start p-4 space-y-2">
                 <!-- ✅ 카테고리 리스트 활용 -->
-                {#each categories as category}
+                <!-- {#each categories as category}
                     <li>
                         <button 
                             class="block hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
@@ -123,10 +142,10 @@ onMount(() => {
                             {category}
                         </button>
                     </li>
-                {/each}
+                {/each} -->
 
                 <!-- 로그인 / 로그아웃 -->
-                {#if !$access}
+                {#if !$accessToken}
                     <li>
                         <button 
                             class="block hover:bg-amber-400 px-3 py-2 rounded transition duration-200"

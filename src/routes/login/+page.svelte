@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
-  import { userId, username, access } from '$lib/stores/userStore';
+  import { userId, username } from '$lib/stores/userStore';
+  import { accessToken, showMessageBox } from '$lib/custom/customStore';
   import { jwtDecode } from 'jwt-decode'; // ✅ named import 사용
 
 
@@ -42,20 +43,20 @@ function loginWithKakao() {
               throw new Error(result.message || '로그인 실패');
           }
           
-          access.set(result.accessToken);
-          if (typeof $access === "string") {
-              const decoded: { id: string, username: string } = jwtDecode($access);
+          accessToken.set(result.accessToken);
+          if (typeof $accessToken === "string") {
+              const decoded: { id: string, username: string } = jwtDecode($accessToken);
               userId.set(decoded.id);
               username.set(decoded.username);
           }
 
           // ✅ 로그인 성공 시 홈으로 이동
-          alert('로그인 성공!');
+          showMessageBox( "success",  "로그인 성공",  "로그인에 성공하였습니다",  "#FCD34D")
           goto('/');
 
       } catch (error) {
-          alert(error);
-      }
+        showMessageBox( "error",  "오류 발생",  "오류 :" + error,  "#FCD34D")
+    }
   }
 
   function forgotPassword() {
@@ -77,12 +78,12 @@ function loginWithKakao() {
       // ✅ 로그인 성공 → JWT 저장 후 홈으로 이동
       const token = urlParams.get("token");
       if (token) {
-        access.set(token);
+        accessToken.set(token);
         const decoded = JSON.parse(atob(token.split('.')[1])); // JWT 디코딩
         userId.set(decoded.id);
         username.set(decoded.username);
 
-        alert("로그인 성공!");
+        showMessageBox( "success",  "로그인 성공",  "로그인에 성공하였습니다",  "#FCD34D")
         goto("/");
       }
     } else if (status === "register_needed") {
@@ -96,7 +97,7 @@ function loginWithKakao() {
     } else if (status === "error") {
       // ✅ 오류 발생 → 에러 메시지 표시
       const error = urlParams.get("error") || "로그인 중 오류 발생";
-      alert(error);
+      showMessageBox( "error",  "오류 발생",  "오류 :" + error,  "#FCD34D")
       goto("/login"); // 새로고침
     } 
   }}
@@ -114,12 +115,12 @@ function loginWithKakao() {
 {    if (status === "success") {
         const token = urlParams.get("token");
         if (token) {
-            access.set(token);
+            accessToken.set(token);
             const decoded = JSON.parse(atob(token.split('.')[1])); // JWT 디코딩
             userId.set(decoded.id);
             username.set(decoded.username);
 
-            alert("카카오 로그인 성공!");
+            showMessageBox( "success",  "로그인 성공",  "로그인에 성공하였습니다",  "#FCD34D")
             goto("/");
         }
     } else if (status === "register_needed") {
@@ -129,7 +130,7 @@ function loginWithKakao() {
         }
     } else if (status === "error") {
         const error = urlParams.get("error") || "카카오 로그인 중 오류 발생";
-        alert(error);
+        showMessageBox( "error",  "오류 발생",  "오류 :" + error,  "#FCD34D")
         goto("/login");
     }
 }

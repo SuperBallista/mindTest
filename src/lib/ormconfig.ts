@@ -7,6 +7,7 @@ import { TempPost } from './entities/TempPost';
 import { TempUpload } from './entities/TempUpload';
 import { Post } from './entities/Post';
 import { config } from '$lib/config';
+import { Quiz } from './entities/Quiz';
 
 // 환경변수 로드
 
@@ -18,7 +19,7 @@ export const AppDataSource = new DataSource({
   username: config.DB_USERNAME,
   password: config.DB_PASSWORD,
   database: config.DB_NAME,
-  entities: [User, Post, Result, Comment, TempPost,TempUpload ], // 엔터티 경로 설정
+  entities: [User, Post, Result, Comment, TempPost,TempUpload,Quiz ], // 엔터티 경로 설정
   extra: {
     connectionLimit: 10, // 최대 연결 수
     connectTimeout: 20000, // 연결 제한 시간 (ms)

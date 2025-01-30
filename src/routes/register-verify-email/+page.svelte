@@ -1,7 +1,8 @@
 <script lang="ts">
-    import { userId, username, access } from '$lib/stores/userStore';
+    import { userId, username } from '$lib/stores/userStore';
     import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
+  import { showMessageBox, accessToken } from '$lib/custom/customStore';
 
   let message = '';
   let isVerified = false;
@@ -51,14 +52,15 @@
 
   async function register() {
     if (password !== confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.');
+      showMessageBox("alert", "잘못된 요청", "암호가 일치하지 않습니다", "#FCD34D")
       return;
     }
     if (!isNicknameAvailable) {
-      alert('닉네임을 확인해주세요.');
+      showMessageBox("alert","잘못된 요청", "닉네임을 확인하세요", "#FCD34D")
       return;
     }
 
+    try{
     const response = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -67,20 +69,19 @@
 
     const data = await response.json();
     if (data.success) {
-      alert('회원가입 성공!');
-     const accessToken:string = data.accessToken
-      if (typeof accessToken === "string") {
-        access.set(data.accessToken);
+      showMessageBox( "success", "등록 성공", "계정 등록에 성공하였습니다", "#FCD34D")
+      const ThisaccessToken:string = data.accessToken
+      if (typeof ThisaccessToken === "string") {
+        accessToken.set(ThisaccessToken);
         const decoded = JSON.parse(atob(data.accessToken.split('.')[1])); // JWT 디코딩
         userId.set(decoded.id);
         username.set(decoded.username);
         goto("/");
       }
 
-    } else {
-      alert(`회원가입 실패: ${data.message}`);
-    }
-  }
+    } } catch (error){ 
+      showMessageBox( "error", "오류 발생", "오류 :" + error, "#FCD34D")
+  }}
 
   async function resendVerificationEmail() {
     const response = await fetch('/api/send-email', {

@@ -2,7 +2,8 @@
     import { onMount } from "svelte";
     import { writable } from "svelte/store";
     import { goto } from '$app/navigation';
-    import { access, userId, username, authFetch } from "$lib/stores/userStore";
+    import { userId, username} from "$lib/stores/userStore"
+    import { authFetch, accessToken, showMessageBox } from "$lib/custom/customStore";
 
 
 
@@ -39,7 +40,7 @@ function canChangeNickname(lastChangeDate: string | null): { allowed: boolean; m
         origin: "db",
     });
 
-    let posts = writable<{ id: string; title: string; viewCount: number; likeCount: number; dislikeCount: number }[]>([]);
+    let posts = writable<{ id: string;  title:string; viewCount: number; likeCount: number; dislikeCount: number }[]>([]);
     let editingNickname = writable(false);
     let editingPassword = writable(false);
 
@@ -56,17 +57,15 @@ try {
     credentials: 'include' // ✅ 쿠키 전송 필수
   });
 
-  if (response.ok) {
-    access.set(null); // ✅ Access Token 삭제
+  if (response.status===200) {
+    accessToken.set(null); // ✅ Access Token 삭제
     userId.set(null);
     username.set(null);
-    alert('로그아웃 되었습니다.');
+    showMessageBox("success",  "로그 아웃", "로그아웃에 성공하였습니다",  "#FCD34D")
     goto('/login'); // ✅ 로그인 페이지로 이동
-  } else {
-    alert('로그아웃 실패!');
-  }
+  } 
 } catch (error) {
-  console.error('로그아웃 오류:', error);
+    showMessageBox("error",  "오류 발생", "오류 :" + error,  "#FCD34D")
 }
 }
 
@@ -76,15 +75,13 @@ try {
     async function loadUserInfo() {
         try {
             const response = await authFetch("/my-info", "GET");
-            if (response.success) {
-                userInfo.set(response.data);
-                newNickname.set(response.data.nickname);
-                
-            } else {
-                console.error("❌ 내 정보 로딩 실패:", response);
-            }
+            if (response.status===200) {
+                const data = await response.json();
+                userInfo.set(data.data);
+                newNickname.set(data.data.nickname);       
+        }
         } catch (error) {
-            console.error("❌ 서버 오류:", error);
+        showMessageBox("error",  "오류 발생", "오류 :" + error,  "#FCD34D")
         }
     }
 
@@ -92,14 +89,12 @@ try {
     async function loadMyPosts() {
         try {
             const response = await authFetch("/my-posts", "GET");
-            if (response.success) {
-                posts.set(response.data);
-                
-            } else {
-                console.error("❌ 내 게시글 로딩 실패:", response);
+            if (response.status===200) {
+                const data = await response.json();
+                posts.set(data.data);            
             }
         } catch (error) {
-            console.error("❌ 서버 오류:", error);
+            showMessageBox("error",  "오류 발생", "오류 :" + error,  "#FCD34D")
         }
     }
 
@@ -108,22 +103,20 @@ try {
         try {
             const response = await authFetch("/update-nickname", "POST", { newNickname: $newNickname });
 
-            if (response.success) {
-                alert("닉네임이 성공적으로 변경되었습니다!");
+            if (response.status===200) {
+                showMessageBox("success",  "닉네임 변경 성공", "닉네임 변경에 성공하였습니다",  "#FCD34D")
                 userInfo.update(info => ({ ...info, nickname: $newNickname }));
                 editingNickname.set(false); // ✅ 폼 닫기
-            } else {
-                alert("닉네임 변경 실패: " + response.message);
-            }
+            } 
         } catch (error) {
-            console.error("❌ 닉네임 변경 오류:", error);
+            showMessageBox("error",  "오류 발생", "오류 :" + error,  "#FCD34D")
         }
     }
 
     // ✅ 비밀번호 변경 요청
     async function updatePassword() {
         if ($newPassword !== $confirmPassword) {
-            alert("비밀번호 확인이 일치하지 않습니다.");
+            showMessageBox("alert",  "잘못된 요청", "암호가 일치하지 않습니다",  "#FCD34D")
             return;
         }
 
@@ -133,17 +126,15 @@ try {
                 newPassword: $newPassword,
             });
 
-            if (response.success) {
-                alert("비밀번호가 변경되었습니다.");
+            if (response.status===200) {
+                showMessageBox("success",  "변경 성공", "암호 변경에 성공하였습니다",  "#FCD34D")
                 currentPassword.set("");
                 newPassword.set("");
                 confirmPassword.set("");
                 editingPassword.set(false); // ✅ 폼 닫기
-            } else {
-                alert("비밀번호 변경 실패: " + response.error);
             }
         } catch (error) {
-            console.error("❌ 비밀번호 변경 오류:", error);
+            showMessageBox("error",  "오류 발생", "오류 :" + error,  "#FCD34D")
         }
     }
 
@@ -154,30 +145,32 @@ try {
     });
 
     async function resign() {
-    const confirmInput = prompt("정말로 탈퇴하시겠습니까? '탈퇴'를 입력해주세요.");
-    if (confirmInput !== "탈퇴") {
-        alert("탈퇴가 취소되었습니다.");
+      const result = await  showMessageBox(
+            "input",
+        "탈퇴 확인",
+        "정말로 탈퇴하시겠습니까?",
+        "#FCD34D",
+        [{key: "check", type: "string", placeholder: "탈퇴를 입력하고 확인을 누르면 탈퇴됩니다", label: "" }])
+     
+        if (result.values?.check!=="탈퇴" || !(result.success))
+        {
+        showMessageBox("alert",  "탈퇴 취소", "탈퇴를 취소합니다",  "#FCD34D")
         return;
-    }
+        }
 
     try {
         const response = await authFetch("/resign", "DELETE");
 
-        if (response.success) {
-            alert("계정이 삭제되었습니다.");
-            access.set(null);
+        if (response.status===200) {
+            showMessageBox("success",  "계정 삭제", "계정 삭제에 성공하였습니다",  "#FCD34D")
+            accessToken.set(null);
             userId.set(null);
             username.set(null);
-            goto("/");
-        } else {
-            alert(`탈퇴 실패: ${response.message}`);
-        }
+            goto("/");}
     } catch (error) {
-        console.error("❌ 계정 삭제 오류:", error);
+        showMessageBox("error",  "오류 발생", "오류 :" + error,  "#FCD34D")
     }
-}
-
-
+    }
 </script>
 
 

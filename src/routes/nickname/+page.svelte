@@ -1,28 +1,36 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { authFetch } from "$lib/stores/userStore";
+    import { authFetch } from "$lib/custom/customStore";
     import { goto } from '$app/navigation';
+    import { showMessageBox } from "$lib/custom/customStore";
+
 
     let nickname = "";
     let user = null;
 
     async function fetchUserInfo() {
+        try{
         const response = await authFetch("/api/auth/me", "GET");
-        if (response.success) {
-            user = response.user;
-        } else {
-            alert("로그인이 필요합니다.");
-            goto("/login");
+        if (response.status===200) {
+          const data = await response.json()
+          user = data
+        }}
+        catch (error) {
+            showMessageBox("error", "오류 발생", "오류 :" + error, "#FCD34D")
         }
     }
 
     async function submitNickname() {
+
+        try {
         const response = await authFetch("/api/auth/set-nickname", "POST", { nickname });
-        if (response.success) {
-            alert("닉네임이 설정되었습니다!");
+        if (response.status===200) {
+            showMessageBox( "success", "닉네임 변경","닉네임을 변경하였습니다", "#FCD34D")
             goto("/");
-        } else {
-            alert("닉네임 설정 실패: " + response.message);
+        } }
+        catch (error)
+        {
+            showMessageBox( "error", "오류 발생", "오류 :" + error, "#FCD34D")
         }
     }
 

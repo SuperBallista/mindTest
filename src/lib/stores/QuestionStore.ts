@@ -3,6 +3,32 @@ import type { Question } from '$lib/types';
 import type { Result } from '$lib/types';
 
 
+// 선택지 인터페이스
+export interface QuizChoice {
+  선택지: string;
+  이미지: string;
+}
+
+// 질문 인터페이스
+export interface QuizQuestion {
+  문제: string;
+  이미지: string;
+  선택지: QuizChoice[];
+  정답: number;
+  점수: number;
+}
+
+export const jsonOutput = writable<string>("");
+
+// 최상위 JSON 응답 구조
+export interface QuizResponse {
+  questions: QuizQuestion[];
+}
+
+export const quizList = writable<QuizResponse>({
+  questions: JSON.parse(JSON.stringify([])) // ✅ 초기값을 JSON으로 변환하여 타입 일관성 유지
+});
+
 
 // ✅ 질문지 및 다음 페이지 관련 상태
 export const scoreObject = writable<Record<string, number>>({});
@@ -45,14 +71,14 @@ export const defaultTestData: TestData = {
       title: "",
       description: "",
       image: "",
-      scoreRanges: [{ name: "", logic: "and", min: 0, max: 0 }]
+      scoreRanges: [{ name: "", logic: "and", min: null, max: null }]
     },
     {
       id: "",
       title: "",
       description: "",
       image: "",
-      scoreRanges: [{ name: "", logic: "and", min: 0, max: 0 }]
+      scoreRanges: [{ name: "", logic: "and", min: null, max: null }]
     }
   ]
 };
@@ -94,8 +120,8 @@ export function normalizeTestData(data: Partial<TestData>): TestData {
             ? r.scoreRanges.map(range => ({
                 name: range.name ?? "",
                 logic: range.logic ?? "and",
-                min: typeof range.min === "number" ? range.min : 0,
-                max: typeof range.max === "number" ? range.max : 0
+                min: typeof range.min === "number" ? range.min : null,
+                max: typeof range.max === "number" ? range.max : null
               }))
             : [...defaultTestData.results[0].scoreRanges]
         }))
@@ -112,6 +138,18 @@ export function setTestData(data: Partial<TestData>): void {
 
 
 
-
-
-
+// 퀴즈 데이터를 열기
+export const quizId = writable<number|undefined>()
+export const quizOpen = writable<QuizResponse>({questions:[]});
+export const quizScore = writable<number>(0);
+export const totalQuizScore = writable<number>(0);
+export const quizIndex = writable<number>(0);
+export const timer = writable<number>(0);
+export const title = writable<string | null>();
+export const image = writable<string | null>();
+export const wrong = writable<number[]>();
+export const views = writable<number>(0);
+export const likes = writable<number>(0);
+export const dislikes = writable<number>(0);
+export const url = writable<string>();
+export const editSecure = writable<"public" | "url" | "password">("public");

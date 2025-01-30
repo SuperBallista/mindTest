@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { authFetch } from '$lib/stores/userStore';
+    import { authFetch, showMessageBox } from '$lib/custom/customStore';
     import { testStore } from '$lib/stores/QuestionStore';
   
     // ✅ 올바른 타입 정의
@@ -19,26 +19,17 @@
     async function loadTest(testId: string) {
       try {
   
-        const response = await authFetch<{ id: string; jsonData: string }>(`/temp-data/${testId}`, "GET");
+        const response = await authFetch(`/temp-data/${testId}`, "GET");
   
-        if (!response) {
-          console.error("❌ 응답이 없습니다.");
-          alert("서버에서 응답을 받지 못했습니다.");
-          return;
-        }
-  
-        if (response?.id) {
-          // ✅ JSON 데이터 파싱 후 상태 업데이트
-          testStore.set(JSON.parse(response.jsonData));
-          alert('테스트 불러오기 완료!');
-          closeModal(); // ✅ 모달 닫기
-        } else {
-          console.warn("⚠️ 해당 테스트를 찾을 수 없습니다.", response);
-          alert('해당 테스트를 찾을 수 없습니다.');
-        }
+        if (response.status===200)
+      {const data = await response.json()
+        testStore.set(JSON.parse(data.jsonData))
+        showMessageBox("success","임시자료 로드","임시자료를 불러오는데 성공하였습니다","#FCD34D")
+        closeModal(); // ✅ 모달 닫기
+      }
+
       } catch (error) {
-        console.error("❌ 테스트 불러오기 중 오류 발생:", error);
-        alert('DB 불러오기 실패!');
+      showMessageBox("error","오류 발생","오류:", "#FCD34D" )
       }
     }
   
@@ -47,17 +38,13 @@
      */
     async function deleteTest(testId: string) {
       try {
-        const response = await authFetch<{ success: boolean }>(`/temp-data/${testId}`, 'DELETE');
+        const response = await authFetch(`/temp-data/${testId}`, 'DELETE');
   
-        if (response.success) {
-          alert('테스트 삭제 완료!');
-          tests = tests.filter(test => test.id !== testId);
-        } else {
-          alert('삭제 실패!');
-        }
+        if (response.status===204) {
+    showMessageBox("success", "임시자료 삭제", "임시자료를 삭제하는데 성공하였습니다","#FCD34D")
+        } 
       } catch (error) {
-        console.error("❌ 테스트 삭제 중 오류 발생:", error);
-        alert('삭제 요청 실패!');
+        showMessageBox("error","오류 발생","오류:", "#FCD34D" )
       }
     }
   </script>

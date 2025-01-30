@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import { AppDataSource } from '$lib/ormconfig';
-import { Post } from '$lib/entities/Post';
+import { Quiz } from '$lib/entities/Quiz';
 
 export const GET: RequestHandler = async ({ locals }) => {
     try {
@@ -14,10 +14,10 @@ export const GET: RequestHandler = async ({ locals }) => {
             await AppDataSource.initialize();
         }
 
-        const postRepository = AppDataSource.getRepository(Post);
+        const quizRepository = AppDataSource.getRepository(Quiz);
 
         // ✅ 현재 사용자가 작성한 게시글 목록 조회
-        const posts = await postRepository.find({
+        const posts = await quizRepository.find({
             where: { user: { id: locals.user.id } },
             order: { created_at: 'DESC' }, // 최신순 정렬
             take: 30 // ✅ 최신 게시글 30개만 가져오기

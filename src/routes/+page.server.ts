@@ -1,6 +1,5 @@
+import { Quiz } from '$lib/entities/Quiz.js';
 import { AppDataSource } from '$lib/ormconfig';
-import { Post } from '$lib/entities/Post';
-
 
 
 export async function load({ }) {
@@ -9,26 +8,22 @@ export async function load({ }) {
         await AppDataSource.initialize();
     }
 
-    const postRepository = AppDataSource.getRepository(Post);
+    const quizRepository = AppDataSource.getRepository(Quiz);
 
     try {
         // ✅ 조회수 + 추천수 - 비추천수를 기준으로 정렬하여 상위 30개 가져오기
-        const postlist = await postRepository
-            .createQueryBuilder("post")
-            .orderBy("(post.views + post.likes - post.dislikes)", "DESC") // ✅ 정렬 기준 적용
-            .limit(30) // ✅ 상위 30개만 가져오기
-            .getMany();
-
-
+        const quizData = await quizRepository.find({where:{secure:"public"}})
+        
+        
         return { 
-            list: postlist.map(post => ({
-                id: post.id,
+            list: quizData.map(post => ({
                 title: post.title,
-                description: post.description,
-                image: post.image,
-                viewCount: post.views,
-                likeCount: post.likes,
-                dislikeCount: post.dislikes,            
+                image: post.image || "",
+                url: post.url,
+                likes: post.likes,
+                views: post.views,
+                dislikes: post.dislikes
+
             }))
         };
     } catch (error) {

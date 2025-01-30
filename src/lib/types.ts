@@ -40,3 +40,4 @@ export type ScoreRange = {
   questions: Question[];
   results: Result[];
 }
+
