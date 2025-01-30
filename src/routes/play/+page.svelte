@@ -10,19 +10,18 @@
     let showModal = false;
     let modalImage = "";
 
-    let timeLeft = $timer; // ⏳ 남은 시간 (초)
     let countdown: ReturnType<typeof setInterval>; // ⏳ 타이머 변수
 
     // ⏳ 타이머 시작
     function startTimer() {
         clearInterval(countdown);
-        timeLeft = $timer;
 
         countdown = setInterval(() => {
-            if (timeLeft > 0) {
-                timeLeft -= 1;
+            if ($timer > 0) {
+                timer.set($timer - 1);
             } else {
                 clearInterval(countdown);
+                showMessageBox("alert", "시간 초과!", "제한 시간이 초과되었습니다.", "#FCD34D");
                 endQuiz(); // ⏳ 시간이 다 되면 종료
             }
         }, 1000);
@@ -44,8 +43,6 @@
 
     // ❌ 제한 시간 초과 시 종료
     function endQuiz() {
-        showMessageBox("alert", "시간 초과!", "제한 시간이 초과되었습니다.", "#FCD34D");
-
         // 🏆 전체 총점 계산
         let totalScore = $quizOpen.questions.reduce((acc, q) => acc + Number(q.점수 || 1), 0);
         totalQuizScore.set(totalScore);
@@ -71,8 +68,8 @@
             quizIndex.set($quizIndex + 1);
             question = $quizOpen.questions[$quizIndex];
             choices = question.선택지;
-            if ($timer !== 0)
-            {startTimer();} // 🔄 다음 문제 타이머 시작
+            if ($timer > 0)
+        {startTimer()}
         }
     }
 
@@ -93,7 +90,8 @@
 
     onMount(() => {
         window.addEventListener("keydown", handleKeydown);
-        startTimer(); // 첫 문제 시작 시 타이머 실행
+        if ($timer>0)
+        {startTimer()}; // 첫 문제 시작 시 타이머 실행
     });
 
     onDestroy(() => {
@@ -107,7 +105,7 @@
     <div class="bg-white shadow-lg rounded-lg p-6 max-w-md w-full mt-8 text-center">
         <!-- ⏳ 남은 시간 표시 -->
         <div class="text-red-500 text-lg font-bold mb-2">
-            ⏳ 남은 시간: {formatTime(timeLeft)}
+            ⏳ 남은 시간: {formatTime($timer)}
         </div>
 
         {#if question.이미지}
