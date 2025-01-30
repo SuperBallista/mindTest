@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { AppDataSource } from '$lib/ormconfig';
-import { Post } from '$lib/entities/Post';
 import { User } from '$lib/entities/User';
+import { Quiz } from '$lib/entities/Quiz.js';
 
 export async function GET({ locals }) {
     if (!locals.user || !locals.user.id) {
@@ -10,7 +10,7 @@ export async function GET({ locals }) {
 
     try {
         const userRepository = AppDataSource.getRepository(User);
-        const postRepository = AppDataSource.getRepository(Post);
+        const postRepository = AppDataSource.getRepository(Quiz);
 
         // ✅ 사용자 정보 조회
         const user = await userRepository.findOne({
