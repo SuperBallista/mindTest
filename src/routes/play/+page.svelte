@@ -104,9 +104,11 @@
 <div class="flex flex-col items-center min-h-screen bg-gray-100 px-4 py-6">
     <div class="bg-white shadow-lg rounded-lg p-6 max-w-md w-full mt-8 text-center">
         <!-- ⏳ 남은 시간 표시 -->
+         {#if ($timer!==0)}
         <div class="text-red-500 text-lg font-bold mb-2">
             ⏳ 남은 시간: {formatTime($timer)}
         </div>
+        {/if}
 
         {#if question.이미지}
             <img src={question.이미지} alt="문제 이미지"
