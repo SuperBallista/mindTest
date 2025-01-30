@@ -7,7 +7,7 @@
     import { username } from "$lib/stores/userStore";
     import { jwtDecode } from "jwt-decode";
     import type { JwtPayload } from "jsonwebtoken";
-    import { editSecure, image, quizId, timer, title, url } from "$lib/stores/QuestionStore"
+    import { editSecure, image, jsonOutput, quizId, timer, title, url } from "$lib/stores/QuestionStore"
 
     interface CustomJwtPayload extends JwtPayload {
   id: string;
@@ -110,7 +110,7 @@ onMount(() => {
                     <li>
                         <button 
                             class="hover:bg-amber-400 px-3 py-2 rounded transition duration-200"
-                            on:click={() => {goto("/upload/quiz"); title.set(""); url.set(""); image.set(""); editSecure.set("public"); timer.set(0); quizId.set(undefined) }}
+                            on:click={() => {goto("/upload/quiz"); jsonOutput.set(""); title.set(""); url.set(""); image.set(""); editSecure.set("public"); timer.set(0); quizId.set(undefined) }}
                         >
                             올리기
                         </button>
