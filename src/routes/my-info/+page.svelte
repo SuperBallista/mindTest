@@ -260,7 +260,7 @@ try {
             {#each $posts as post}
                 <li class="bg-gray-100 p-3 rounded-lg shadow flex justify-between items-center">
                     <div>
-                        <a href={`/test/${post.id}`} class="text-blue-500 hover:underline font-medium">{post.title}</a>
+                        <a href={`/quiz/${post.id}`} class="text-blue-500 hover:underline font-medium">{post.title}</a>
                         <div class="flex space-x-3 text-gray-600 text-sm mt-1">
                             <span>👁️ {post.viewCount.toLocaleString()}</span>
                             <span class="text-green-600">👍 {post.likeCount.toLocaleString()}</span>
