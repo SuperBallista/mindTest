@@ -1,4 +1,6 @@
 <script lang="ts">
+  import QRCode from "qrcode";
+
 interface ResultType {
   success: boolean;
   values?: { password?: string }; // values가 optional
@@ -36,10 +38,29 @@ editSecure.set(data.secure)
 let token: string | undefined
 const description = data.title + "문제 풀이 페이지입니다"
 
+let qrCodeDataUrl: string = "";
+let errorMessage: string = "";
+
+async function generateQRCode() {
+    tokenUrl =  data.writerId === $userId ? `?token=${data.token}` : ""
+    shareUrl = BASE_URL + "/quiz/" + data.url + tokenUrl;
+    try {
+      qrCodeDataUrl = await QRCode.toDataURL(shareUrl);
+    } catch (err) {
+      errorMessage = `QR 코드 생성 오류: ${(err as Error).message}`;
+      console.error(err);
+    }
+  }
+
+
 onMount(() => {
         const params = new URLSearchParams(window.location.search);
         token = params.get("token") ?? undefined;
         console.log("🔍 `onMount()`에서 가져온 token:", token);
+        tokenUrl =  data.writerId === $userId ? `?token=${data.token}` : ""
+        shareUrl = BASE_URL + "/quiz/" + data.url + tokenUrl;
+        generateQRCode()
+
     });
 
 
@@ -97,12 +118,10 @@ async function startQuiz() {
     }
 }
 
-
+let tokenUrl
+let shareUrl:string
 
 function shareQuiz() {
-    console.log($userId)
-    const tokenUrl =  data.writerId === $userId ? `?token=${data.token}` : ""
-        const shareUrl = BASE_URL + "/quiz/" + data.url + tokenUrl;
 
         if (navigator.share) {
             navigator.share({
@@ -172,6 +191,8 @@ try {
 
 
 
+
+
 </script>
 
 
@@ -211,6 +232,9 @@ try {
 
         <p class="text-gray-700 text-base mb-6 leading-relaxed">{description}</p>
         <p class="text-gray-700 text-base mb-6 leading-relaxed">올린 사람 : {data.writerName || "삭제된 계정"}</p>
+        {#if !(data.secure==="url")}
+      <div class="flex justify-center">  <img class="w-36 h-36" src="{qrCodeDataUrl}" alt="QR Code" /></div>
+        {/if}
 
         <div class="flex space-x-4 justify-center">
             {#if !(data.secure==="url" && !token)}
